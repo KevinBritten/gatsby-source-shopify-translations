@@ -1,28 +1,28 @@
-const { createClient } = require("./create-client")
+const { createClient } = require("./create-client");
 const {
   translatedProductsQuery,
   translatedCollectionsQuery,
-} = require("./queries")
+} = require("./queries");
 
-exports.createOperations = options => {
-  const client = createClient(options)
+exports.createOperations = (options) => {
+  const client = createClient(options);
 
   async function createOperation(operationQuery) {
-    return await client.query(operationQuery)
+    return await client.query(operationQuery);
   }
 
   return {
-    createTranslatedProductsOperation: async ids => {
+    createTranslatedProductsOperation: async (ids, identifiers) => {
       return await createOperation(
-        translatedProductsQuery(ids),
+        translatedProductsQuery(ids, identifiers),
         "TRANSLATED_PRODUCTS"
-      )
+      );
     },
-    createTranslatedCollectionsOperation: async ids => {
+    createTranslatedCollectionsOperation: async (ids, identifiers) => {
       return await createOperation(
-        translatedCollectionsQuery(ids),
+        translatedCollectionsQuery(ids, identifiers),
         "TRANSLATED_COLLECTIONS"
-      )
+      );
     },
-  }
-}
+  };
+};

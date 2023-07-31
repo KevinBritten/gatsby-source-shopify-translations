@@ -49,19 +49,30 @@ function sourceAllNodes(_x4, _x5) {
 }
 function _sourceAllNodes() {
   _sourceAllNodes = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee3(gatsbyApi, pluginOptions) {
-    var locales, _pluginOptions$identi, identifiers, _pluginOptions$waitin, waitingGatsbySourceShopify, actions, createContentDigest, createNodeId, getNodesByType, reporter, createNode, _loop, _iterator, _step;
+    var locales, _pluginOptions$waitin, waitingGatsbySourceShopify, actions, createContentDigest, createNodeId, getNodesByType, reporter, createNode, _loop, _iterator, _step;
     return _regenerator.default.wrap(function _callee3$(_context5) {
       while (1) switch (_context5.prev = _context5.next) {
         case 0:
-          locales = pluginOptions.locales, _pluginOptions$identi = pluginOptions.identifiers, identifiers = _pluginOptions$identi === void 0 ? [] : _pluginOptions$identi, _pluginOptions$waitin = pluginOptions.waitingGatsbySourceShopify, waitingGatsbySourceShopify = _pluginOptions$waitin === void 0 ? 5000 : _pluginOptions$waitin;
+          locales = pluginOptions.locales, _pluginOptions$waitin = pluginOptions.waitingGatsbySourceShopify, waitingGatsbySourceShopify = _pluginOptions$waitin === void 0 ? 5000 : _pluginOptions$waitin;
           actions = gatsbyApi.actions, createContentDigest = gatsbyApi.createContentDigest, createNodeId = gatsbyApi.createNodeId, getNodesByType = gatsbyApi.getNodesByType, reporter = gatsbyApi.reporter;
           createNode = actions.createNode;
           _loop = /*#__PURE__*/_regenerator.default.mark(function _loop() {
-            var resource, translations, _loop2, _iterator2, _step2;
+            var resource, metafieldIdentifiers, translations, _loop2, _iterator2, _step2;
             return _regenerator.default.wrap(function _loop$(_context4) {
               while (1) switch (_context4.prev = _context4.next) {
                 case 0:
                   resource = _step.value;
+                  metafieldIdentifiers = getNodesByType("Shopify" + resource.id + "Metafield").map(function (metafield) {
+                    var identifier = {
+                      namespace: metafield.namespace,
+                      key: metafield.key
+                    };
+                    return identifier;
+                  }).filter(function (v, i, a) {
+                    return a.findIndex(function (t) {
+                      return JSON.stringify(t) === JSON.stringify(v);
+                    }) === i;
+                  });
                   translations = [];
                   _loop2 = /*#__PURE__*/_regenerator.default.mark(function _loop2() {
                     var lang, op, resourceNodes, ids, callNumbers, i, idsTranch, _yield$op, data, newTranslations;
@@ -86,7 +97,7 @@ function _sourceAllNodes() {
                           }
                           idsTranch = ids.splice(0, MAX_INPUT_RANGE);
                           _context3.next = 12;
-                          return op(idsTranch, identifiers);
+                          return op(idsTranch, metafieldIdentifiers);
                         case 12:
                           _yield$op = _context3.sent;
                           data = _yield$op.data;
@@ -115,16 +126,16 @@ function _sourceAllNodes() {
                     }, _loop2);
                   });
                   _iterator2 = _createForOfIteratorHelperLoose(locales);
-                case 4:
+                case 5:
                   if ((_step2 = _iterator2()).done) {
-                    _context4.next = 8;
+                    _context4.next = 9;
                     break;
                   }
-                  return _context4.delegateYield(_loop2(), "t0", 6);
-                case 6:
-                  _context4.next = 4;
+                  return _context4.delegateYield(_loop2(), "t0", 7);
+                case 7:
+                  _context4.next = 5;
                   break;
-                case 8:
+                case 9:
                   reporter.info("Fetching translated resources type " + resource.translationsNodeType + ": " + translations.length);
                   translations.forEach(function (node) {
                     return createNode((0, _extends2.default)({}, node, {
@@ -138,7 +149,7 @@ function _sourceAllNodes() {
                       }
                     }));
                   });
-                case 10:
+                case 11:
                 case "end":
                   return _context4.stop();
               }

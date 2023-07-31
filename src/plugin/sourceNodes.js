@@ -25,11 +25,7 @@ async function waitShopifyNodes(
 }
 
 async function sourceAllNodes(gatsbyApi, pluginOptions) {
-  const {
-    locales,
-    identifiers = [],
-    waitingGatsbySourceShopify = 5000,
-  } = pluginOptions;
+  const { locales, waitingGatsbySourceShopify = 5000 } = pluginOptions;
 
   const {
     actions,
@@ -42,6 +38,21 @@ async function sourceAllNodes(gatsbyApi, pluginOptions) {
   const { createNode } = actions;
 
   for (const resource of resources) {
+    const metafieldIdentifiers = getNodesByType(
+      `Shopify${resource.id}Metafield`
+    )
+      .map((metafield) => {
+        const identifier = {
+          namespace: metafield.namespace,
+          key: metafield.key,
+        };
+        return identifier;
+      })
+      .filter(
+        (v, i, a) =>
+          a.findIndex((t) => JSON.stringify(t) === JSON.stringify(v)) === i
+      );
+
     let translations = [];
 
     for (const lang of locales) {
@@ -58,7 +69,7 @@ async function sourceAllNodes(gatsbyApi, pluginOptions) {
 
       for (let i = 0; i < callNumbers; i++) {
         const idsTranch = ids.splice(0, MAX_INPUT_RANGE);
-        const { data } = await op(idsTranch, identifiers);
+        const { data } = await op(idsTranch, metafieldIdentifiers);
         const newTranslations = data.nodes
           .filter((node) => !!node)
           .map((node) => {
